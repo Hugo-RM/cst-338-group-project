@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">decisionWheel</string>
+    <string name="welcome_to_decision_wheel_sign_in">Welcome to decision wheel sign in.</string>
+    <string name="enter_username">enter username</string>
+    <string name="password">password</string>
+    <string name="login">Login</string>
 </resources>

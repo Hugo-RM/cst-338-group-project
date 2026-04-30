@@ -6,68 +6,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-<!--accidentally put login here, will replace text with main page code-->
-    
-
+    <!--accidentally put login here, will replace text with main page code-->
 
 
     <TextView
-        android:id="@+id/titleLoginTextView"
+        android:id="@+id/startPageMessage"
         android:layout_width="match_parent"
-        android:layout_height="148dp"
+        android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:layout_marginBottom="24dip"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
         android:gravity="center"
-        android:text="Welcome to decision wheel sign in."
-        android:textSize="38dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/roulette_decision_wheel"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    <!--this block lets user input username text box-->
-    <EditText
-        android:id="@+id/userNameloginEntry"
-        android:layout_width="match_parent"
-        android:layout_height="85dp"
-        android:layout_margin="16dp"
-        android:autofillHints="Enter username"
-        android:gravity="center"
-        android:hint=" enter username"
-        android:inputType="text"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleLoginTextView"
 
-        />
-
-
-    <EditText
-        android:id="@+id/passwordLoginEntry"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_margin="16dp"
-        android:autofillHints="enter password"
-        android:gravity="center"
-        android:hint="password"
-        android:inputType="textPassword"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userNameloginEntry"
-
-        />
     <Button
         android:id="@+id/loginButton"
+        app:layout_constraintVertical_chainStyle="packed"
         android:layout_width="match_parent"
         android:layout_height="105dp"
+        android:gravity="center"
+        android:text="@string/login"
+        android:textColor="@android:color/white"
+        android:textSize="32sp"
+        app:layout_constraintBottom_toTopOf="@id/makeAccButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="Login"
-        android:textSize="32sp"
+        app:layout_constraintTop_toBottomOf="@id/startPageMessage" />
 
+    <Button
+        android:id="@+id/makeAccButton"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="105dp"
+        android:gravity="center"
+        android:text="@string/create_user_account"
         android:textColor="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/passwordLoginEntry"
-        />
+        android:textSize="32sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loginButton" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

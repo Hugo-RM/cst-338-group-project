@@ -8,12 +8,50 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/titleLoginTextView"
+        android:layout_width="match_parent"
+        android:layout_height="148dp"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="24dip"
+        android:gravity="center"
+        android:text="Welcome to decistion wheel sign in."
+        android:textSize="38dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <!--this block lets user input username text box-->
+    <EditText
+        android:id="@+id/userNameloginEntry"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:layout_margin="16dp"
+        android:autofillHints="Enter username"
+        android:gravity="center"
+        android:hint=" enter username"
+        android:inputType="text"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleLoginTextView"
+
+        />
+
+
+    <EditText
+        android:id="@+id/passwordLoginEntry"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_margin="16dp"
+        android:autofillHints="enter password"
+        android:gravity="center"
+        android:hint="password"
+        android:inputType="textPassword"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userNameloginEntry"
+
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,9 @@ public class Wheel {
     private static final int MAX_SLICES = 5;
     private ArrayList<Slice> slices;
 
+    private static Boolean status = false;
+
+
     public Wheel() {
         slices = new ArrayList<>();
     }
@@ -44,5 +47,21 @@ public class Wheel {
             System.out.println("Slice not found");
         }
     }
+
+    public void setStatus(Boolean status) {
+        Wheel.status = status;
+    }
+
+    public void createDrawableSlice(){
+        if (slices.size() >= 2) {
+            for(int i = 0; i < slices.size(); i++) {
+                //TODO: create drawble slice in xml
+            }
+        }
+        else{
+            System.out.println("Not enough slices");
+        }
+    }
+
 
 }

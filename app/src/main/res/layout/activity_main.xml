@@ -18,7 +18,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <Button
+    <com.example.decisionwheel.wheel.WheelVIew
+        android:id="@+id/wheelVIew"
         android:layout_width="350dp"
         android:layout_height="350dp"
         android:background="@drawable/roulette_wheel"

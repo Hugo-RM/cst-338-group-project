@@ -1,5 +1,7 @@
 package com.example.decisionwheel.wheel;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 public class Wheel {
@@ -15,6 +17,7 @@ public class Wheel {
     public void insertSlice(Slice slice) {
         if (slices.size() < MAX_SLICES) {
             slices.add(slice);
+            Log.i("Wheel", "Slice inserted");
         } else {
             throw new IllegalStateException("Wheel is full");
         }
@@ -51,17 +54,5 @@ public class Wheel {
     public void setStatus(Boolean status) {
         Wheel.status = status;
     }
-
-    public void createDrawableSlice(){
-        if (slices.size() >= 2) {
-            for(int i = 0; i < slices.size(); i++) {
-                //TODO: create drawble slice in xml
-            }
-        }
-        else{
-            System.out.println("Not enough slices");
-        }
-    }
-
 
 }

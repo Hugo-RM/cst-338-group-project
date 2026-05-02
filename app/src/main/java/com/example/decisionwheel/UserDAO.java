@@ -9,7 +9,7 @@ import androidx.room.Query;
 
 // remember its for wheels not gym log activity recorder. this will be for identifying users from table
 @Dao
-public interface userDAO {
+public interface UserDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(User user);
 

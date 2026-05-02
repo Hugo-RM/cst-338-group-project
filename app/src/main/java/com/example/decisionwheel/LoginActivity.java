@@ -1,17 +1,15 @@
 package com.example.decisionwheel;
 
-
-import  android.content.Context;
+import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
-import  android.os.Bundle;
-import  android.view.View;
+import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import android.content.SharedPreferences;
 import com.example.decisionwheel.databinding.LoginActivityBinding;
-
 
 public class LoginActivity extends AppCompatActivity {
     private LoginActivityBinding binding;

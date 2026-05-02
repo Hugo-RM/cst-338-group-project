@@ -7,4 +7,5 @@
     <string name="decision_wheelStartPageText">Decision Wheel</string>
     <string name="create_user_account">Create user account</string>
     <string name="roulette_decision_wheel">Roulette Decision Wheel</string>
+    <string name="spin">Spin!</string>
 </resources>

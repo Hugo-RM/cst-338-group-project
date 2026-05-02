@@ -1,10 +1,29 @@
 package com.example.decisionwheel.wheel;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(
+    tableName = "slice",
+    foreignKeys = @ForeignKey(
+        entity = WheelEntity.class,
+        parentColumns = "id",
+        childColumns = "wheel_id",
+        onDelete = ForeignKey.CASCADE
+    )
+)
 public class Slice {
-    private String objective;
-    private String category;
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @ColumnInfo(name = "wheel_id", index = true)
+    private int wheelId;
+
+    private String objective;
+    private String category;
     private int color;
 
     public Slice(String objective, String category, int color){
@@ -13,6 +32,7 @@ public class Slice {
         this.color = color;
     }
 
+    @Ignore
     public Slice(String objective, int color){
         this.objective = objective;
         this.color = color;
@@ -45,6 +65,14 @@ public class Slice {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getWheelId() {
+        return wheelId;
+    }
+
+    public void setWheelId(int wheelId) {
+        this.wheelId = wheelId;
     }
 
     public void setColor(int color) {

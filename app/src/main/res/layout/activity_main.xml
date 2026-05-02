@@ -5,49 +5,29 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WelcomePage">
-    <!--accidentally put login here, will replace text with main page code-->
-
+    tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/startPageMessage"
-        android:layout_width="match_parent"
+        android:id="@+id/tag_category"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:gravity="center"
-        android:text="@string/roulette_decision_wheel"
-        android:textSize="30sp"
+        android:text="Hello World!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/loginButton"
-        app:layout_constraintVertical_chainStyle="packed"
-        android:layout_width="match_parent"
-        android:layout_height="105dp"
-        android:gravity="center"
-        android:text="@string/login"
-        android:textColor="@android:color/white"
-        android:textSize="32sp"
-        app:layout_constraintBottom_toTopOf="@id/makeAccButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/startPageMessage" />
 
-    <Button
-        android:id="@+id/makeAccButton"
-        android:layout_marginTop="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="105dp"
-        android:gravity="center"
-        android:text="@string/create_user_account"
-        android:textColor="@android:color/white"
-        android:textSize="32sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/loginButton" />
+<!--    <com.example.decisionwheel.wheel.WheelVIew-->
+<!--        android:id="@+id/wheelVIew"-->
+<!--        android:layout_width="350dp"-->
+<!--        android:layout_height="350dp"-->
+<!--        android:background="@drawable/roulette_wheel"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        -->
+<!--        />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

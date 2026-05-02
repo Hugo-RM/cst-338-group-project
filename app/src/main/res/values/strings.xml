@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">decisionWheel</string>
+    <string name="spin">Spin!</string>
 </resources>

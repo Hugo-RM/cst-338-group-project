@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
     <TextView
         android:id="@+id/tag_category"
         android:layout_width="wrap_content"
@@ -15,17 +16,30 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.096" />
 
     <com.example.decisionwheel.wheel.WheelVIew
         android:id="@+id/wheelVIew"
         android:layout_width="350dp"
         android:layout_height="350dp"
+        android:layout_marginBottom="264dp"
         android:background="@drawable/roulette_wheel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/spinWheel"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_marginTop="44dp"
+        android:text="@string/spin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/wheelVIew" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

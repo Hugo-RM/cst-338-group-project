@@ -21,10 +21,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.graphics.Insets;
 
 import com.example.decisionwheel.wheel.Slice;
 import com.example.decisionwheel.wheel.Wheel;
 import com.example.decisionwheel.wheel.WheelVIew;
+
+
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -47,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         
         // Initialize Overlay Views

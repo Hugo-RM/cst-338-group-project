@@ -3,19 +3,22 @@ package com.example.decisionwheel;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
@@ -28,26 +31,50 @@ import com.example.decisionwheel.wheel.WheelVIew;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
+    //Basic wheel functionality
     private Wheel sampleWheel = new Wheel();
-    private AlertDialog.Builder builder;
     private Button spinWheel;
     private WheelVIew wheelView;
+    private TextView textView;
 
+    //Sensor Mechanism
     private SensorManager sensorManager;
     private Sensor accelerometer;
-    private static final float SHAKE_THRESHOLD = 12.0f;
 
+    //Overlay
+    private ConstraintLayout resultOverlay;
+    private TextView overlayResult;
+    private Button btnAwesome;
+
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        builder = new AlertDialog.Builder(this);
+        // Initialize Overlay Views
+        resultOverlay = findViewById(R.id.resultOverlay);
+        overlayResult = findViewById(R.id.overlayResult);
+        btnAwesome = findViewById(R.id.btnAwesome);
 
-        sampleWheel.insertSlice(new Slice("Slice 1", Color.RED));
-        sampleWheel.insertSlice(new Slice("Slice 2", Color.GREEN));
-        sampleWheel.insertSlice(new Slice("Slice 3", Color.BLUE));
-        sampleWheel.insertSlice(new Slice("Slice 4", Color.YELLOW));
+        // Set up overlay button listener
+        if (btnAwesome != null) {
+            btnAwesome.setOnClickListener(v -> hideOverlay());
+        }
+
+        sampleWheel.insertSlice(new Slice("Movie Night", Color.RED));
+        sampleWheel.insertSlice(new Slice("Order Pizza", Color.GREEN));
+        sampleWheel.insertSlice(new Slice("Go for a Walk", Color.BLUE));
+        sampleWheel.insertSlice(new Slice("Play Games", Color.YELLOW));
+
+        sampleWheel.setCategory("FRIDAY NIGHT");
+
+        textView = findViewById(R.id.tag_category);
+        if(sampleWheel.getCategory() != null){
+            textView.setText(sampleWheel.getCategory());
+        } else {
+            textView.setText("UNASSIGNED");
+        }
 
         wheelView = findViewById(R.id.wheelVIew);
         if (wheelView != null) {
@@ -132,15 +159,40 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onAnimationEnd(Animator animation) {
                 wheelView.setRotation(targetRotation % 360);
-                
-                builder.setTitle("Winner!");
-                builder.setMessage("The wheel landed on: " + result.getObjective());
-                builder.setPositiveButton("OK", (dialog, which) -> spinWheel.setEnabled(true));
-                builder.setCancelable(false);
-                builder.show();
+                showOverlay(result.getObjective());
             }
         });
 
         animator.start();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void showOverlay(String result){
+        if (overlayResult != null && resultOverlay != null) {
+            overlayResult.setText("Yey, your activity is: " + result + "!");
+            resultOverlay.setVisibility(View.VISIBLE);
+            resultOverlay.setAlpha(0f);
+            resultOverlay.animate()
+                    .alpha(1f)
+                    .setDuration(500)
+                    .setListener(null);
+        }
+    }
+
+    private void hideOverlay() {
+        if (resultOverlay != null) {
+            resultOverlay.animate()
+                    .alpha(0f)
+                    .setDuration(300)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            resultOverlay.setVisibility(View.GONE);
+                            if (spinWheel != null) {
+                                spinWheel.setEnabled(true);
+                            }
+                        }
+                    });
+        }
     }
 }

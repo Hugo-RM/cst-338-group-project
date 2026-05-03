@@ -7,12 +7,25 @@ import java.util.ArrayList;
 public class Wheel {
     private static final int MAX_SLICES = 5;
     private ArrayList<Slice> slices;
+    private String category;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     private static Boolean status = false;
 
-
     public Wheel() {
         slices = new ArrayList<>();
+        category = "UNASSIGNED";
+    }
+    public Wheel(String category) {
+        slices = new ArrayList<>();
+        this.category = category;
     }
     public void insertSlice(Slice slice) {
         if (slices.size() < MAX_SLICES) {

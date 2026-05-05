@@ -72,7 +72,7 @@ public class LandingActivity extends AppCompatActivity {
         adapter = new WheelAdapter(new WheelAdapter.OnWheelActionListener() {
             @Override
             public void onUse(com.example.decisionwheel.wheel.WheelEntity wheel) {
-                startActivity(WheelDetailActivity.newIntent(LandingActivity.this, wheel.getId()));
+                startActivity(MainActivity.newIntent(LandingActivity.this, wheel.getId()));
             }
             @Override
             public void onEdit(com.example.decisionwheel.wheel.WheelEntity wheel) {
@@ -111,9 +111,11 @@ public class LandingActivity extends AppCompatActivity {
                     }
                     AppDatabase.databaseWriteExecutor.execute(() -> {
                         long wheelId = db.wheelDao().insert(new WheelEntity(name, userId));
-                        runOnUiThread(() ->
-                                startActivity(WheelDetailActivity.newIntent(this, (int) wheelId))
-                        );
+                        runOnUiThread(() -> {
+                            Intent intent = new Intent(LandingActivity.this, WheelManagementActivity.class);
+                            intent.putExtra("WHEEL_ID", (int) wheelId);
+                            startActivity(intent);
+                        });
                     });
                 })
                 .setNegativeButton("Cancel", null)

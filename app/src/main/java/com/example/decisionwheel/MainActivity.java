@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -59,8 +60,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         wheelConfig = findViewById(R.id.wheel_config);
         if (wheelConfig != null) {
-            wheelConfig.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, RouletteSelectorActivity.class)));
+            wheelConfig.setOnClickListener(v -> {
+                SharedPreferences prefs = getSharedPreferences("decisionWheelPrefs", MODE_PRIVATE);
+                int userId = prefs.getInt("userId", -1);
+                startActivity(LandingActivity.newIntent(MainActivity.this, userId));
+                finish();
+            });
         }
 
         int wheelId = getIntent().getIntExtra(EXTRA_WHEEL_ID, -1);

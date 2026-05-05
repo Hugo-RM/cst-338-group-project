@@ -5,49 +5,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:padding="16dp">
 
         <TextView
             android:id="@+id/landingUsername"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:layout_marginBottom="4dp" />
-
-        <Button
-            android:id="@+id/btnAdminPanel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Admin Panel"
-            android:visibility="invisible"
-            tools:visibility="visible"
-            android:layout_marginBottom="4dp" />
+            app:layout_constraintBottom_toBottomOf="@id/btnLogout"
+            app:layout_constraintEnd_toStartOf="@id/btnLogout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btnLogout" />
 
         <Button
             android:id="@+id/btnLogout"
-            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Logout"
-            android:layout_marginBottom="12dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnAdminPanel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Admin Panel"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnLogout"
+            tools:visibility="visible" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/text_your_wheels"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:text="Your Wheels"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnAdminPanel" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/wheelsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_your_wheels"
+            tools:listitem="@layout/wheel_item" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddWheel"
@@ -55,7 +71,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:contentDescription="Add Wheel"
+        android:contentDescription="@string/add_wheel"
+        android:translationX="-5px"
+        android:translationY="-65px"
         app:srcCompat="@android:drawable/ic_input_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

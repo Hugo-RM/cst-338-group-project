@@ -34,6 +34,13 @@ public class Slice {
     }
 
     @Ignore
+    public Slice(String objective, String category, int color) {
+        this.objective = objective;
+        this.category = category;
+        this.color = color;
+    }
+
+    @Ignore
     public Slice(String objective, int color) {
         this.objective = objective;
         this.color = color;

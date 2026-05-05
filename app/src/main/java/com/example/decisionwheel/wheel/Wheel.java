@@ -14,6 +14,11 @@ public class Wheel {
         this.category = "UNASSIGNED";
     }
 
+    public Wheel(String category) {
+        this.slices = new ArrayList<>();
+        this.category = category;
+    }
+
     public Wheel(String category, int userId) {
         this.slices = new ArrayList<>();
         this.category = category;
@@ -34,6 +39,14 @@ public class Wheel {
             slices.add(slice);
         } else {
             throw new IllegalStateException("Wheel is full");
+        }
+    }
+
+    public void removeSlice(int index) {
+        if (index >= 0 && index < slices.size()) {
+            slices.remove(index);
+        } else {
+            throw new IndexOutOfBoundsException("Invalid slice index: " + index);
         }
     }
 }

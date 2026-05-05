@@ -16,12 +16,13 @@ import androidx.room.PrimaryKey;
     )
 )
 public class Slice {
+    // Primary key for the slice, auto-generated
     @PrimaryKey(autoGenerate = true)
     private int id;
-
+    // Foreign key referencing the associated wheel
     @ColumnInfo(name = "wheel_id", index = true)
     private int wheelId;
-
+    // Text describing the slice's objective
     private String objective;
     private String category;
     private int color;

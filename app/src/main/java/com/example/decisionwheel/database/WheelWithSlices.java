@@ -4,17 +4,17 @@ import androidx.room.Embedded;
 import androidx.room.Relation;
 
 import com.example.decisionwheel.wheel.Slice;
-import com.example.decisionwheel.wheel.Wheel;
+import com.example.decisionwheel.wheel.WheelEntity;
 
 import java.util.List;
 
 public class WheelWithSlices {
     @Embedded
-    public Wheel wheel;
+    public WheelEntity wheel;
 
     @Relation(
             parentColumn = "id",
-            entityColumn = "wheelId"
+            entityColumn = "wheel_id"
     )
     public List<Slice> slices;
 }

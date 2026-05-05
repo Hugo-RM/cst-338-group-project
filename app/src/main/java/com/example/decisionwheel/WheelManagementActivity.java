@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.decisionwheel.database.AppDatabase;
 import com.example.decisionwheel.wheel.Slice;
-import com.example.decisionwheel.wheel.Wheel;
+import com.example.decisionwheel.wheel.WheelEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,9 +43,9 @@ public class WheelManagementActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wheel_management);
 
-        db = AppDatabase.getDatabase(this);
+        db = AppDatabase.getInstance(this);
         initializeColorMaps();
-        
+
         SharedPreferences prefs = getSharedPreferences("decisionWheelPrefs", MODE_PRIVATE);
         currentUserId = prefs.getInt("userId", -1);
 
@@ -55,9 +55,8 @@ public class WheelManagementActivity extends AppCompatActivity {
             return;
         }
 
-        // Initialize UI
         editCategory = findViewById(R.id.edit_category);
-        
+
         sliceContainers[0] = findViewById(R.id.container_slice1);
         sliceContainers[1] = findViewById(R.id.container_slice2);
         sliceContainers[2] = findViewById(R.id.container_slice3);
@@ -84,7 +83,6 @@ public class WheelManagementActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btn_save_wheel);
         btnSave.setOnClickListener(v -> saveWheel());
 
-        // Check for edit mode
         existingWheelId = getIntent().getIntExtra("WHEEL_ID", -1);
         if (existingWheelId != -1) {
             loadExistingWheel();
@@ -94,7 +92,6 @@ public class WheelManagementActivity extends AppCompatActivity {
     private void initializeColorMaps() {
         colorMap = new HashMap<>();
         reverseColorMap = new HashMap<>();
-        
         addColor("Red", Color.RED);
         addColor("Green", Color.GREEN);
         addColor("Blue", Color.BLUE);
@@ -112,9 +109,7 @@ public class WheelManagementActivity extends AppCompatActivity {
         String[] colors = getResources().getStringArray(R.array.wheel_colors);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, colors);
         for (AutoCompleteTextView dropdown : colorDropdowns) {
-            if (dropdown != null) {
-                dropdown.setAdapter(adapter);
-            }
+            if (dropdown != null) dropdown.setAdapter(adapter);
         }
     }
 
@@ -122,19 +117,17 @@ public class WheelManagementActivity extends AppCompatActivity {
         if (visibleSlices < 5) {
             sliceContainers[visibleSlices].setVisibility(View.VISIBLE);
             visibleSlices++;
-            if (visibleSlices == 5) {
-                btnAddSlice.setVisibility(View.GONE);
-            }
+            if (visibleSlices == 5) btnAddSlice.setVisibility(View.GONE);
         }
     }
 
     private void loadExistingWheel() {
-        db.wheelDAO().getWheelWithSlicesById(existingWheelId).observe(this, wheelWithSlices -> {
+        db.wheelDao().getWheelWithSlicesById(existingWheelId).observe(this, wheelWithSlices -> {
             if (wheelWithSlices != null) {
-                editCategory.setText(wheelWithSlices.wheel.getCategory());
+                editCategory.setText(wheelWithSlices.wheel.getName());
                 List<Slice> slices = wheelWithSlices.slices;
                 visibleSlices = Math.max(2, slices.size());
-                
+
                 for (int i = 0; i < 5; i++) {
                     if (i < slices.size()) {
                         sliceContainers[i].setVisibility(View.VISIBLE);
@@ -147,20 +140,16 @@ public class WheelManagementActivity extends AppCompatActivity {
                         sliceContainers[i].setVisibility(View.GONE);
                     }
                 }
-                
-                if (visibleSlices >= 5) {
-                    btnAddSlice.setVisibility(View.GONE);
-                } else {
-                    btnAddSlice.setVisibility(View.VISIBLE);
-                }
+
+                btnAddSlice.setVisibility(visibleSlices >= 5 ? View.GONE : View.VISIBLE);
             }
         });
     }
 
     private void saveWheel() {
-        String category = editCategory.getText().toString().trim();
-        if (category.isEmpty()) {
-            Toast.makeText(this, "Please enter a category", Toast.LENGTH_SHORT).show();
+        String name = editCategory.getText().toString().trim();
+        if (name.isEmpty()) {
+            Toast.makeText(this, "Please enter a wheel name", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -181,30 +170,26 @@ public class WheelManagementActivity extends AppCompatActivity {
 
         AppDatabase.databaseWriteExecutor.execute(() -> {
             if (existingWheelId != -1) {
-                // Update existing
-                Wheel wheel = new Wheel(category, currentUserId);
+                WheelEntity wheel = new WheelEntity(name, currentUserId);
                 wheel.setId(existingWheelId);
-                
+                db.wheelDao().update(wheel);
+                db.sliceDao().deleteAllForWheel(existingWheelId);
                 List<Slice> slices = new ArrayList<>();
                 for (SliceData data : validSlices) {
-                    slices.add(new Slice(data.text, category, data.color, existingWheelId));
+                    slices.add(new Slice(data.text, name, data.color, existingWheelId));
                 }
-                
-                db.wheelDAO().deleteSlicesByWheelId(existingWheelId);
-                db.wheelDAO().insertWheel(wheel);
-                db.wheelDAO().insertSlices(slices);
+                db.sliceDao().insertAll(slices);
             } else {
-                // Insert new
-                Wheel newWheel = new Wheel(category, currentUserId);
+                WheelEntity newWheel = new WheelEntity(name, currentUserId);
+                long wheelId = db.wheelDao().insert(newWheel);
                 List<Slice> slices = new ArrayList<>();
                 for (SliceData data : validSlices) {
-                    slices.add(new Slice(data.text, category, data.color, 0));
+                    slices.add(new Slice(data.text, name, data.color, (int) wheelId));
                 }
-                db.wheelDAO().insertWheelWithSlices(newWheel, slices);
+                db.sliceDao().insertAll(slices);
             }
-            
             runOnUiThread(() -> {
-                Toast.makeText(WheelManagementActivity.this, "Wheel saved successfully!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(WheelManagementActivity.this, "Wheel saved!", Toast.LENGTH_SHORT).show();
                 finish();
             });
         });

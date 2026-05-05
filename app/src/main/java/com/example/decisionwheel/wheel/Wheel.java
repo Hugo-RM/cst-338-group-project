@@ -1,18 +1,12 @@
 package com.example.decisionwheel.wheel;
 
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
 import java.util.ArrayList;
 
-@Entity(tableName = "wheel_table")
 public class Wheel {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
-    private String category;
-    private int userId; // Reference to the owner
+    public static final int MAX_SLICES = 5;
 
-    @Ignore
+    private String category;
+    private int userId;
     private ArrayList<Slice> slices;
 
     public Wheel() {
@@ -26,40 +20,14 @@ public class Wheel {
         this.userId = userId;
     }
 
-    public int getId() {
-        return id;
-    }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public int getUserId() { return userId; }
+    public void setUserId(int userId) { this.userId = userId; }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public ArrayList<Slice> getSlices() {
-        return slices;
-    }
-
-    public void setSlices(ArrayList<Slice> slices) {
-        this.slices = slices;
-    }
-
-    @Ignore
-    private static final int MAX_SLICES = 5;
+    public ArrayList<Slice> getSlices() { return slices; }
+    public void setSlices(ArrayList<Slice> slices) { this.slices = slices; }
 
     public void insertSlice(Slice slice) {
         if (slices.size() < MAX_SLICES) {

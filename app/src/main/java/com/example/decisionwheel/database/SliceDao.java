@@ -1,5 +1,6 @@
 package com.example.decisionwheel.database;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -23,4 +24,10 @@ public interface SliceDao {
 
     @Query("SELECT * FROM slice WHERE wheel_id = :wheelId")
     List<Slice> getSlicesForWheel(int wheelId);
+
+    @Query("SELECT * FROM slice WHERE wheel_id = :wheelId")
+    LiveData<List<Slice>> getSlicesForWheelLD(int wheelId);
+
+    @Query("DELETE FROM slice WHERE wheel_id = :wheelId")
+    void deleteAllForWheel(int wheelId);
 }

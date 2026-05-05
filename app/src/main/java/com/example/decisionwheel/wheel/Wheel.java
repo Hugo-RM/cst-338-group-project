@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class Wheel {
-    private static final int MAX_SLICES = 5;
+    public static final int MAX_SLICES = 5;
     private ArrayList<Slice> slices;
     private String category;
 

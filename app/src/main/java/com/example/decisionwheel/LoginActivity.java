@@ -2,13 +2,15 @@ package com.example.decisionwheel;
 
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
-import android.content.SharedPreferences;
+
+import com.example.decisionwheel.database.UserEntity;
 import com.example.decisionwheel.databinding.LoginActivityBinding;
 
 public class LoginActivity extends AppCompatActivity {
@@ -39,20 +41,20 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        LiveData<User> userObserver = repository.getUserByUserName(username);
+        LiveData<UserEntity> userObserver = repository.getUserByUserName(username);
         userObserver.observe(this, user -> {
             if (user != null) {
                 String password = binding.passwordLoginEntry.getText().toString();
                 if (password.equals(user.getPassword())) {
-                    // save userId to shared preferences
-                    SharedPreferences sharedPreferences = getSharedPreferences("decisionWheelPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt("userId", user.getId());
-                    editor.apply();
+                    SharedPreferences prefs = getSharedPreferences("decisionWheelPrefs", MODE_PRIVATE);
+                    prefs.edit().putInt("userId", user.getId()).apply();
 
-                    // go to landing page
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
+                    if (user.isAdmin()) {
+                        startActivity(AdminLandingActivity.newIntent(getApplicationContext()));
+                    } else {
+                        startActivity(LandingActivity.newIntent(getApplicationContext(), user.getId()));
+                    }
+                    finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid password", Toast.LENGTH_SHORT).show();
                 }
@@ -62,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public static Intent loginIntentFactory(Context context) {
+    public static Intent newIntent(Context context) {
         return new Intent(context, LoginActivity.class);
     }
 }

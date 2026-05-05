@@ -1,4 +1,4 @@
-package com.example.decisionwheel;
+package com.example.decisionwheel.database;
 
 import android.app.Application;
 import android.util.Log;

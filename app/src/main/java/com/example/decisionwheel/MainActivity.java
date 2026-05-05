@@ -15,8 +15,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -25,14 +25,19 @@ import com.example.decisionwheel.database.AppDatabase;
 import com.example.decisionwheel.wheel.Slice;
 import com.example.decisionwheel.wheel.Wheel;
 import com.example.decisionwheel.wheel.WheelVIew;
+import com.google.android.material.button.MaterialButton;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final String EXTRA_WHEEL_ID = "extra_wheel_id";
 
-    private Wheel sampleWheel = new Wheel();
+    private Wheel activeWheel = new Wheel();
     private Button spinWheel;
+    private MaterialButton wheelConfig;
     private WheelVIew wheelView;
     private TextView textView;
+    private ConstraintLayout resultOverlay;
+    private TextView overlayResult;
+    private Button btnAwesome;
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
@@ -45,14 +50,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         textView = findViewById(R.id.tag_category);
         wheelView = findViewById(R.id.wheelVIew);
         spinWheel = findViewById(R.id.spinWheel);
+        resultOverlay = findViewById(R.id.resultOverlay);
+        overlayResult = findViewById(R.id.overlayResult);
+        btnAwesome = findViewById(R.id.btnAwesome);
 
         if (spinWheel != null) spinWheel.setOnClickListener(v -> spinTheWheel());
+        if (btnAwesome != null) btnAwesome.setOnClickListener(v -> hideOverlay());
+
+        wheelConfig = findViewById(R.id.wheel_config);
+        if (wheelConfig != null) {
+            wheelConfig.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, RouletteSelectorActivity.class)));
+        }
 
         int wheelId = getIntent().getIntExtra(EXTRA_WHEEL_ID, -1);
         if (wheelId != -1) {
             loadWheelFromDb(wheelId);
         } else {
-            loadDefaultWheel();
+            setupDefaultWheel();
         }
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -73,20 +88,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             java.util.List<Slice> slices = db.sliceDao().getSlicesForWheel(wheelId);
             com.example.decisionwheel.wheel.WheelEntity entity = db.wheelDao().findById(wheelId);
             runOnUiThread(() -> {
-                for (Slice s : slices) sampleWheel.insertSlice(s);
+                for (Slice s : slices) activeWheel.insertSlice(s);
                 if (entity != null && textView != null) textView.setText(entity.getName());
-                if (wheelView != null) wheelView.setWheel(sampleWheel);
+                if (wheelView != null) wheelView.setWheel(activeWheel);
             });
         });
     }
 
-    private void loadDefaultWheel() {
-        sampleWheel.insertSlice(new Slice("Movie Night", Color.RED));
-        sampleWheel.insertSlice(new Slice("Order Pizza", Color.GREEN));
-        sampleWheel.insertSlice(new Slice("Go for a Walk", Color.BLUE));
-        sampleWheel.insertSlice(new Slice("Play Games", Color.YELLOW));
+    private void setupDefaultWheel() {
+        activeWheel.insertSlice(new Slice("Movie Night", Color.RED));
+        activeWheel.insertSlice(new Slice("Order Pizza", Color.GREEN));
+        activeWheel.insertSlice(new Slice("Go for a Walk", Color.BLUE));
+        activeWheel.insertSlice(new Slice("Play Games", Color.YELLOW));
         if (textView != null) textView.setText("FRIDAY NIGHT");
-        if (wheelView != null) wheelView.setWheel(sampleWheel);
+        if (wheelView != null) wheelView.setWheel(activeWheel);
     }
 
     @Override
@@ -116,13 +131,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     private void spinTheWheel() {
-        if (sampleWheel.getSlices().isEmpty()) return;
+        if (activeWheel.getSlices().isEmpty()) return;
         spinWheel.setEnabled(false);
 
-        int winningIndex = (int) (Math.random() * sampleWheel.getSlices().size());
-        Slice result = sampleWheel.getSlices().get(winningIndex);
+        int winningIndex = (int) (Math.random() * activeWheel.getSlices().size());
+        Slice result = activeWheel.getSlices().get(winningIndex);
 
-        float sweepPerSlice = 360f / sampleWheel.getSlices().size();
+        float sweepPerSlice = 360f / activeWheel.getSlices().size();
         float angleToSlice = (winningIndex * sweepPerSlice) + (sweepPerSlice / 2f);
         float targetRotation = 3600f + (270f - angleToSlice);
 
@@ -133,15 +148,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onAnimationEnd(Animator animation) {
                 wheelView.setRotation(targetRotation % 360);
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Winner!")
-                        .setMessage("The wheel landed on: " + result.getObjective())
-                        .setPositiveButton("OK", (dialog, which) -> spinWheel.setEnabled(true))
-                        .setCancelable(false)
-                        .show();
+                showOverlay(result.getObjective());
             }
         });
         animator.start();
+    }
+
+    private void showOverlay(String resultText) {
+        if (overlayResult != null) overlayResult.setText(resultText);
+        if (resultOverlay != null) resultOverlay.setVisibility(android.view.View.VISIBLE);
+    }
+
+    private void hideOverlay() {
+        if (resultOverlay != null) resultOverlay.setVisibility(android.view.View.GONE);
+        if (spinWheel != null) spinWheel.setEnabled(true);
     }
 
     public static Intent newIntent(Context context, int wheelId) {

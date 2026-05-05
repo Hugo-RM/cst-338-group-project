@@ -28,6 +28,9 @@ public interface SliceDao {
     @Query("SELECT * FROM slice WHERE wheel_id = :wheelId")
     LiveData<List<Slice>> getSlicesForWheelLD(int wheelId);
 
+    @Insert
+    void insertAll(List<Slice> slices);
+
     @Query("DELETE FROM slice WHERE wheel_id = :wheelId")
     void deleteAllForWheel(int wheelId);
 }

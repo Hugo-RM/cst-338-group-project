@@ -3,6 +3,7 @@ package com.example.decisionwheel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,16 +14,18 @@ import com.example.decisionwheel.wheel.WheelEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WheelAdapter extends RecyclerView.Adapter<WheelAdapter.ViewHolder> {
+public class WheelAdapter extends RecyclerView.Adapter<WheelAdapter.WheelViewHolder> {
 
-    public interface OnWheelClickListener {
-        void onWheelClick(WheelEntity wheel);
+    public interface OnWheelActionListener {
+        void onUse(WheelEntity wheel);
+        void onEdit(WheelEntity wheel);
+        void onDelete(WheelEntity wheel);
     }
 
     private List<WheelEntity> wheels = new ArrayList<>();
-    private final OnWheelClickListener listener;
+    private final OnWheelActionListener listener;
 
-    public WheelAdapter(OnWheelClickListener listener) {
+    public WheelAdapter(OnWheelActionListener listener) {
         this.listener = listener;
     }
 
@@ -33,17 +36,19 @@ public class WheelAdapter extends RecyclerView.Adapter<WheelAdapter.ViewHolder> 
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public WheelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_wheel, parent, false);
-        return new ViewHolder(view);
+                .inflate(R.layout.wheel_item, parent, false);
+        return new WheelViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull WheelViewHolder holder, int position) {
         WheelEntity wheel = wheels.get(position);
         holder.nameText.setText(wheel.getName());
-        holder.itemView.setOnClickListener(v -> listener.onWheelClick(wheel));
+        holder.btnUse.setOnClickListener(v -> listener.onUse(wheel));
+        holder.btnEdit.setOnClickListener(v -> listener.onEdit(wheel));
+        holder.btnDelete.setOnClickListener(v -> listener.onDelete(wheel));
     }
 
     @Override
@@ -51,12 +56,16 @@ public class WheelAdapter extends RecyclerView.Adapter<WheelAdapter.ViewHolder> 
         return wheels.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class WheelViewHolder extends RecyclerView.ViewHolder {
         TextView nameText;
+        ImageButton btnUse, btnEdit, btnDelete;
 
-        ViewHolder(@NonNull View itemView) {
+        WheelViewHolder(@NonNull View itemView) {
             super(itemView);
-            nameText = itemView.findViewById(R.id.wheelItemName);
+            nameText = itemView.findViewById(R.id.text_wheel_category);
+            btnUse = itemView.findViewById(R.id.btn_use_wheel);
+            btnEdit = itemView.findViewById(R.id.btn_edit_wheel);
+            btnDelete = itemView.findViewById(R.id.btn_delete_wheel);
         }
     }
 }

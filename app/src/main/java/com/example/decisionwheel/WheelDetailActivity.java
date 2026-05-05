@@ -95,8 +95,7 @@ public class WheelDetailActivity extends AppCompatActivity {
                         return;
                     }
                     int color = SLICE_COLORS[currentSliceCount % SLICE_COLORS.length];
-                    Slice slice = new Slice(objective, "UNASSIGNED", color);
-                    slice.setWheelId(wheelId);
+                    Slice slice = new Slice(objective, "UNASSIGNED", color, wheelId);
                     AppDatabase.databaseWriteExecutor.execute(() -> db.sliceDao().insert(slice));
                 })
                 .setNegativeButton("Cancel", null)

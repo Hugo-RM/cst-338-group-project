@@ -16,67 +16,42 @@ import androidx.room.PrimaryKey;
     )
 )
 public class Slice {
-    // Primary key for the slice, auto-generated
     @PrimaryKey(autoGenerate = true)
     private int id;
-    // Foreign key referencing the associated wheel
+
     @ColumnInfo(name = "wheel_id", index = true)
     private int wheelId;
-    // Text describing the slice's objective
+
     private String objective;
     private String category;
     private int color;
 
-    public Slice(String objective, String category, int color){
+    public Slice(String objective, String category, int color, int wheelId) {
         this.objective = objective;
         this.category = category;
         this.color = color;
+        this.wheelId = wheelId;
     }
-    // Secondary constructor used by Room when loading from the database, ignores the category and defaults it to "UNASSIGNED"
+
     @Ignore
-    public Slice(String objective, int color){
+    public Slice(String objective, int color) {
         this.objective = objective;
         this.color = color;
         this.category = "UNASSIGNED";
     }
 
-    public int getColor() {
-        return color;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public String getObjective() {
-        return objective;
-    }
+    public String getObjective() { return objective; }
+    public void setObjective(String objective) { this.objective = objective; }
 
-    public void setObjective(String objective) {
-        this.objective = objective;
-    }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
-    public String getCategory() {
-        return category;
-    }
+    public int getColor() { return color; }
+    public void setColor(int color) { this.color = color; }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public int getId() {
-        return id;
-    }
-// Setter for id, added to allow Room to set the auto-generated ID when a new slice is inserted into the database
-    public void setId(int id) {
-        this.id = id;
-    }
-// Getter for wheelId, added to allow retrieval of the associated wheel's ID when needed
-    public int getWheelId() {
-        return wheelId;
-    }
-// Setter for wheelId, added to allow setting the association between a slice and its wheel after creation
-    public void setWheelId(int wheelId) {
-        this.wheelId = wheelId;
-    }
-// Setter for color, added to allow updating the color of a slice after creation
-    public void setColor(int color) {
-        this.color = color;
-    }
+    public int getWheelId() { return wheelId; }
+    public void setWheelId(int wheelId) { this.wheelId = wheelId; }
 }

@@ -69,9 +69,25 @@ public class LandingActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.wheelsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new WheelAdapter(wheel ->
-                startActivity(WheelDetailActivity.newIntent(this, wheel.getId()))
-        );
+        adapter = new WheelAdapter(new WheelAdapter.OnWheelActionListener() {
+            @Override
+            public void onUse(com.example.decisionwheel.wheel.WheelEntity wheel) {
+                startActivity(WheelDetailActivity.newIntent(LandingActivity.this, wheel.getId()));
+            }
+            @Override
+            public void onEdit(com.example.decisionwheel.wheel.WheelEntity wheel) {
+                Intent intent = new Intent(LandingActivity.this, WheelManagementActivity.class);
+                intent.putExtra("WHEEL_ID", wheel.getId());
+                startActivity(intent);
+            }
+            @Override
+            public void onDelete(com.example.decisionwheel.wheel.WheelEntity wheel) {
+                AppDatabase.databaseWriteExecutor.execute(() -> {
+                    db.sliceDao().deleteAllForWheel(wheel.getId());
+                    db.wheelDao().delete(wheel);
+                });
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         db.wheelDao().getWheelsForUserLD(userId).observe(this, wheels -> adapter.setWheels(wheels));

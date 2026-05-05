@@ -26,6 +26,8 @@
         <activity android:name=".AdminLandingActivity" android:exported="false" />
         <activity android:name=".WheelDetailActivity" android:exported="false" />
         <activity android:name=".MainActivity" android:exported="false" />
+        <activity android:name=".WheelManagementActivity" android:exported="false" />
+        <activity android:name=".RouletteSelectorActivity" android:exported="false" />
 
     </application>
 

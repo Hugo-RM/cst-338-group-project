@@ -32,7 +32,7 @@ public class Slice {
         this.category = category;
         this.color = color;
     }
-
+    // Secondary constructor used by Room when loading from the database, ignores the category and defaults it to "UNASSIGNED"
     @Ignore
     public Slice(String objective, int color){
         this.objective = objective;

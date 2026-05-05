@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -15,27 +16,28 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.core.graphics.Insets;
 
+import com.example.decisionwheel.database.AppDatabase;
 import com.example.decisionwheel.wheel.Slice;
 import com.example.decisionwheel.wheel.Wheel;
 import com.example.decisionwheel.wheel.WheelVIew;
+import com.google.android.material.button.MaterialButton;
 
-
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
-    //Basic wheel functionality
-    private Wheel sampleWheel = new Wheel();
+    private Wheel activeWheel = new Wheel();
     private Button spinWheel;
+    private MaterialButton wheelConfig;
     private WheelVIew wheelView;
     private TextView textView;
+    private AppDatabase db;
 
     //Sensor Mechanism
     private SensorManager sensorManager;
@@ -52,41 +54,40 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        db = AppDatabase.getDatabase(this);
+
         // Initialize Overlay Views
         resultOverlay = findViewById(R.id.resultOverlay);
         overlayResult = findViewById(R.id.overlayResult);
         btnAwesome = findViewById(R.id.btnAwesome);
 
-        // Set up overlay button listener
         if (btnAwesome != null) {
             btnAwesome.setOnClickListener(v -> hideOverlay());
         }
 
-        sampleWheel.insertSlice(new Slice("Movie Night", Color.RED));
-        sampleWheel.insertSlice(new Slice("Order Pizza", Color.GREEN));
-        sampleWheel.insertSlice(new Slice("Go for a Walk", Color.BLUE));
-        sampleWheel.insertSlice(new Slice("Play Games", Color.YELLOW));
-
-        sampleWheel.setCategory("FRIDAY NIGHT");
-
         textView = findViewById(R.id.tag_category);
-        if(sampleWheel.getCategory() != null){
-            textView.setText(sampleWheel.getCategory());
-        } else {
-            textView.setText("UNASSIGNED");
-        }
-
         wheelView = findViewById(R.id.wheelVIew);
-        if (wheelView != null) {
-            wheelView.setWheel(sampleWheel);
-        }
-        
         spinWheel = findViewById(R.id.spinWheel);
+        
         if (spinWheel != null) {
             spinWheel.setOnClickListener(v -> spinTheWheel());
         }
 
-        // Initialize Sensor Manager and Accelerometer
+        wheelConfig = findViewById(R.id.wheel_config);
+        if (wheelConfig != null) {
+            wheelConfig.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, RouletteSelectorActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        int wheelId = getIntent().getIntExtra("WHEEL_ID", -1);
+        if (wheelId != -1) {
+            loadWheel(wheelId);
+        } else {
+            setupDefaultWheel();
+        }
+
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         if (sensorManager != null) {
             accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -97,6 +98,36 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    private void setupDefaultWheel() {
+        activeWheel = new Wheel();
+        activeWheel.insertSlice(new Slice("Movie Night", "Fun", Color.RED, 0));
+        activeWheel.insertSlice(new Slice("Order Pizza", "Food", Color.GREEN, 0));
+        activeWheel.insertSlice(new Slice("Go for a Walk", "Exercise", Color.BLUE, 0));
+        activeWheel.insertSlice(new Slice("Play Games", "Fun", Color.YELLOW, 0));
+        activeWheel.setCategory("SAMPLE WHEEL");
+        
+        updateUI();
+    }
+
+    private void loadWheel(int wheelId) {
+        db.wheelDAO().getWheelWithSlicesById(wheelId).observe(this, wheelWithSlices -> {
+            if (wheelWithSlices != null) {
+                activeWheel = wheelWithSlices.wheel;
+                activeWheel.setSlices(new ArrayList<>(wheelWithSlices.slices));
+                updateUI();
+            }
+        });
+    }
+
+    private void updateUI() {
+        if (textView != null) {
+            textView.setText(activeWheel.getCategory());
+        }
+        if (wheelView != null) {
+            wheelView.setWheel(activeWheel);
+        }
     }
 
     @Override
@@ -122,10 +153,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             float y = event.values[1];
             float z = event.values[2];
 
-            // Calculate gForce magnitude
             double gForce = Math.sqrt(x * x + y * y + z * z) / SensorManager.GRAVITY_EARTH;
             
-            // Trigger spin if a shake is detected and button is enabled
             if (gForce > 2.5) {
                 if (spinWheel != null && spinWheel.isEnabled()) {
                     spinTheWheel();
@@ -135,19 +164,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // Not used
-    }
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     private void spinTheWheel() {
-        if (sampleWheel.getSlices().isEmpty()) return;
+        if (activeWheel.getSlices().isEmpty()) return;
 
         spinWheel.setEnabled(false);
 
-        int winningIndex = (int) (Math.random() * sampleWheel.getSlices().size());
-        Slice result = sampleWheel.getSlices().get(winningIndex);
+        int winningIndex = (int) (Math.random() * activeWheel.getSlices().size());
+        Slice result = activeWheel.getSlices().get(winningIndex);
 
-        float sweepPerSlice = 360f / sampleWheel.getSlices().size();
+        float sweepPerSlice = 360f / activeWheel.getSlices().size();
         float angleToSlice = (winningIndex * sweepPerSlice) + (sweepPerSlice / 2f);
         float targetRotation = 3600f + (270f - angleToSlice);
 

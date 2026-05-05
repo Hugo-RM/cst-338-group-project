@@ -2,13 +2,15 @@ package com.example.decisionwheel;
 
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import android.content.SharedPreferences;
+
+import com.example.decisionwheel.database.User;
+import com.example.decisionwheel.database.UserRepository;
 import com.example.decisionwheel.databinding.LoginActivityBinding;
 
 public class LoginActivity extends AppCompatActivity {
@@ -23,43 +25,46 @@ public class LoginActivity extends AppCompatActivity {
 
         repository = UserRepository.getRepository(getApplication());
 
-        binding.loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                verifyUser();
-            }
-        });
+        binding.loginButton.setOnClickListener(view -> verifyUser());
     }
 
     private void verifyUser() {
-        String username = binding.userNameloginEntry.getText().toString();
+        String username = binding.userNameloginEntry.getText().toString().trim();
+        String password = binding.passwordLoginEntry.getText().toString().trim();
 
-        if (username.isEmpty()) {
-            Toast.makeText(this, "Username cannot be blank", Toast.LENGTH_SHORT).show();
+        if (username.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Username and password cannot be blank", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        LiveData<User> userObserver = repository.getUserByUserName(username);
-        userObserver.observe(this, user -> {
+        // Use a one-time observation or just check the value.
+        // To keep it simple and consistent with the project's style, 
+        // we'll observe and then remove the observer once we have a result.
+        repository.getUserByUserName(username).observe(this, user -> {
             if (user != null) {
-                String password = binding.passwordLoginEntry.getText().toString();
                 if (password.equals(user.getPassword())) {
-                    // save userId to shared preferences
-                    SharedPreferences sharedPreferences = getSharedPreferences("decisionWheelPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt("userId", user.getId());
-                    editor.apply();
-
-                    // go to landing page
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
+                    Log.d("LoginActivity", "Login successful for user: " + username);
+                    saveUserAndNavigate(user);
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid password", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(LoginActivity.this, username + " is not a valid username", Toast.LENGTH_SHORT).show();
+                Log.d("LoginActivity", "User not found: " + username);
+                Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void saveUserAndNavigate(User user) {
+        SharedPreferences sharedPreferences = getSharedPreferences("decisionWheelPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("userId", user.getId());
+        editor.apply();
+
+        Intent intent = new Intent(this, RouletteSelectorActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     public static Intent loginIntentFactory(Context context) {

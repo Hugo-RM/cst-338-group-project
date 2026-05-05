@@ -8,4 +8,13 @@
     <string name="create_user_account">Create user account</string>
     <string name="roulette_decision_wheel">Roulette Decision Wheel</string>
     <string name="spin">Spin!</string>
+
+    <string-array name="wheel_colors">
+        <item>Red</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Yellow</item>
+        <item>Magenta</item>
+        <item>Cyan</item>
+    </string-array>
 </resources>

@@ -1,12 +1,11 @@
-package com.example.decisionwheel;
+package com.example.decisionwheel.database;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import java.util.*;
 
-
-@Entity(tableName = "user_table")
+@Entity(tableName = "user_table", indices = {@Index(value = {"username"}, unique = true)})
 public class User {
     @PrimaryKey(autoGenerate = true)
     private int id;

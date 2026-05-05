@@ -1,13 +1,38 @@
 package com.example.decisionwheel.wheel;
 
-import android.util.Log;
-
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 import java.util.ArrayList;
 
+@Entity(tableName = "wheel_table")
 public class Wheel {
-    private static final int MAX_SLICES = 5;
-    private ArrayList<Slice> slices;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private String category;
+    private int userId; // Reference to the owner
+
+    @Ignore
+    private ArrayList<Slice> slices;
+
+    public Wheel() {
+        this.slices = new ArrayList<>();
+        this.category = "UNASSIGNED";
+    }
+
+    public Wheel(String category, int userId) {
+        this.slices = new ArrayList<>();
+        this.category = category;
+        this.userId = userId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getCategory() {
         return category;
@@ -17,55 +42,30 @@ public class Wheel {
         this.category = category;
     }
 
-    private static Boolean status = false;
-
-    public Wheel() {
-        slices = new ArrayList<>();
-        category = "UNASSIGNED";
-    }
-    public Wheel(String category) {
-        slices = new ArrayList<>();
-        this.category = category;
-    }
-    public void insertSlice(Slice slice) {
-        if (slices.size() < MAX_SLICES) {
-            slices.add(slice);
-            Log.i("Wheel", "Slice inserted");
-        } else {
-            throw new IllegalStateException("Wheel is full");
-        }
+    public int getUserId() {
+        return userId;
     }
 
-    public void replaceSlice(Slice slice, int index){
-        if (index >= 0 && index < slices.size()) {
-            slices.set(index, slice);
-        } else {
-            throw new IndexOutOfBoundsException("Invalid index");
-        }
-    }
-
-    public void removeSlice(int index){
-        if (index >= 0 && index < slices.size()) {
-            slices.remove(index);
-        } else {
-            throw new IndexOutOfBoundsException("Invalid index");
-        }
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public ArrayList<Slice> getSlices() {
         return slices;
     }
 
-    public void removeSliceBySlice(Slice slice){
-        try{
-            slices.remove(slice);
-        } catch (Exception e){
-            System.out.println("Slice not found");
+    public void setSlices(ArrayList<Slice> slices) {
+        this.slices = slices;
+    }
+
+    @Ignore
+    private static final int MAX_SLICES = 5;
+
+    public void insertSlice(Slice slice) {
+        if (slices.size() < MAX_SLICES) {
+            slices.add(slice);
+        } else {
+            throw new IllegalStateException("Wheel is full");
         }
     }
-
-    public void setStatus(Boolean status) {
-        Wheel.status = status;
-    }
-
 }

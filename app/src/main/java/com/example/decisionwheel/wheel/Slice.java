@@ -63,19 +63,19 @@ public class Slice {
     public int getId() {
         return id;
     }
-
+// Setter for id, added to allow Room to set the auto-generated ID when a new slice is inserted into the database
     public void setId(int id) {
         this.id = id;
     }
-
+// Getter for wheelId, added to allow retrieval of the associated wheel's ID when needed
     public int getWheelId() {
         return wheelId;
     }
-
+// Setter for wheelId, added to allow setting the association between a slice and its wheel after creation
     public void setWheelId(int wheelId) {
         this.wheelId = wheelId;
     }
-
+// Setter for color, added to allow updating the color of a slice after creation
     public void setColor(int color) {
         this.color = color;
     }

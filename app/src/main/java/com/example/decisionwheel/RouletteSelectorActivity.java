@@ -22,6 +22,7 @@ public class RouletteSelectorActivity extends AppCompatActivity {
     private AppDatabase db;
     private int currentUserId;
     private Button btnCreateNew;
+    private Button btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,18 @@ public class RouletteSelectorActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        btnLogout = findViewById(R.id.btn_logout);
+        btnLogout.setOnClickListener(v -> {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.remove("userId");
+            editor.apply();
+
+            Intent intent = new Intent(RouletteSelectorActivity.this, WelcomePage.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
 
         recyclerView = findViewById(R.id.recycler_wheels);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

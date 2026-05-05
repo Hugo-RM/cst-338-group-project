@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.decisionwheel.wheel.WheelEntity;
@@ -30,4 +31,8 @@ public interface WheelDao {
 
     @Query("SELECT * FROM wheel WHERE id = :id LIMIT 1")
     WheelEntity findById(int id);
+
+    @Transaction
+    @Query("SELECT * FROM wheel WHERE id = :wheelId LIMIT 1")
+    LiveData<WheelWithSlices> getWheelWithSlicesById(int wheelId);
 }

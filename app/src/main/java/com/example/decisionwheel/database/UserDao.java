@@ -2,36 +2,29 @@ package com.example.decisionwheel.database;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
 
 import java.util.List;
 
 @Dao
-public interface UserDao {
-    @Insert
-    long insert(UserEntity user);
+public interface UserDAO {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insert(User user);
 
-    @Update
-    void update(UserEntity user);
+    @Query("SELECT * FROM user_table WHERE username = :username")
+    LiveData<User> getUserByUserName(String username);
 
-    @Delete
-    void delete(UserEntity user);
+    @Query("SELECT * FROM user_table WHERE username = :username")
+    User getUserByUserNameSync(String username);
 
-    @Query("SELECT * FROM user WHERE username = :username LIMIT 1")
-    UserEntity findByUsername(String username);
+    @Query("SELECT * FROM user_table WHERE id = :userId")
+    LiveData<User> getUserById(int userId);
+    
+    @Query("SELECT COUNT(*) FROM user_table")
+    int getUserCount();
 
-    @Query("SELECT * FROM user WHERE id = :id LIMIT 1")
-    UserEntity findById(int id);
-
-    @Query("SELECT * FROM user WHERE username = :username LIMIT 1")
-    LiveData<UserEntity> findByUsernameLD(String username);
-
-    @Query("SELECT * FROM user WHERE id = :id LIMIT 1")
-    LiveData<UserEntity> findByIdLD(int id);
-
-    @Query("SELECT * FROM user")
-    LiveData<List<UserEntity>> getAllUsersLD();
+    @Query("SELECT * FROM user_table")
+    List<User> getAllUsers();
 }

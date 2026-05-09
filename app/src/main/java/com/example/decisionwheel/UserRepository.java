@@ -42,6 +42,10 @@ public class UserRepository {
         return userDao.getUserByUserName(username);
     }
 
+    public void insertUser(User user) {
+        AppDatabase.databaseWriteExecutor.execute(() -> userDao.insert(user));
+    }
+
     public LiveData<User> getUserById(int userId) {
         return userDao.getUserById(userId);
     }

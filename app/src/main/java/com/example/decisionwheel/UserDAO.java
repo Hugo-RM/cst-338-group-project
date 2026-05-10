@@ -10,6 +10,8 @@ import androidx.room.Query;
 // remember its for wheels not gym log activity recorder. this will be for identifying users from table
 @Dao
 public interface UserDAO {
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(User user);
 
@@ -18,4 +20,8 @@ public interface UserDAO {
 
     @Query("SELECT * FROM user_table WHERE id = :userId")
     LiveData<User> getUserById(int userId);
+
+
+    @Query("SELECT * FROM user_table WHERE username = :username LIMIT 1")
+    User getUserByUserNameNow(String username);
 }

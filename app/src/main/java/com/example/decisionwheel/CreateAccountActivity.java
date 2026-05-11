@@ -8,8 +8,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 
+import com.example.decisionwheel.database.AppDatabase;
+import com.example.decisionwheel.database.UserEntity;
+import com.example.decisionwheel.database.UserRepository;
 import com.example.decisionwheel.databinding.ActivityMakeAccountBinding;
 
 public class CreateAccountActivity extends AppCompatActivity {
@@ -38,7 +40,6 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         Log.d("CreateAccount", "Button clicked, username: " + username);
 
-        // validate fields
         if (username.isEmpty()) {
             Toast.makeText(this, "Username cannot be blank", Toast.LENGTH_SHORT).show();
             return;
@@ -50,22 +51,20 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         Log.d("CreateAccount", "Validation passed, checking username");
 
-        // check if username already exists
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            User existingUser = repository.getUserByUserNameNow(username);
+            UserEntity existingUser = repository.getUserByUserNameNow(username);
             if (existingUser != null) {
                 runOnUiThread(() -> Toast.makeText(CreateAccountActivity.this, "Username already taken", Toast.LENGTH_SHORT).show());
             } else {
-                repository.insertUser(new User(username, password));
+                repository.insertUser(new UserEntity(username, password));
                 runOnUiThread(() -> {
                     Toast.makeText(CreateAccountActivity.this, "Account created!", Toast.LENGTH_SHORT).show();
-                    startActivity(LoginActivity.loginIntentFactory(getApplicationContext()));
+                    startActivity(LoginActivity.newIntent(getApplicationContext()));
                 });
             }
         });
+    }
 
-
-    } // closes createAccount()
     public static Intent createAccountIntentFactory(Context context) {
         return new Intent(context, CreateAccountActivity.class);
     }

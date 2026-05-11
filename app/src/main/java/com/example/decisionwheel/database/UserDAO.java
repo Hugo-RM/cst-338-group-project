@@ -21,7 +21,10 @@ public interface UserDAO {
 
     @Query("SELECT * FROM user_table WHERE id = :userId")
     LiveData<User> getUserById(int userId);
-    
+
+    @Query("SELECT * FROM user_table WHERE username = :username LIMIT 1")
+    User getUserByUserNameNow(String username);
+
     @Query("SELECT COUNT(*) FROM user_table")
     int getUserCount();
 

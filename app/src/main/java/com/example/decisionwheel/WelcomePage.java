@@ -34,7 +34,7 @@ public class WelcomePage extends AppCompatActivity {
         findViewById(R.id.makeAccButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // todo: create account
+                startActivity(CreateAccountActivity.createAccountIntentFactory(getApplicationContext()));
             }
         });
     }

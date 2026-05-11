@@ -39,6 +39,20 @@ public class UserRepository {
         return userDao.findByUsernameLD(username);
     }
 
+    public void insertUser(UserEntity user) {
+        AppDatabase.databaseWriteExecutor.execute(() -> userDao.insert(user));
+    }
+
+    public UserEntity getUserByUserNameNow(String username) {
+        try {
+            return AppDatabase.databaseWriteExecutor.submit(
+                    () -> userDao.findByUsername(username)
+            ).get();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public LiveData<UserEntity> getUserById(int userId) {
         return userDao.findByIdLD(userId);
     }

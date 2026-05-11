@@ -28,7 +28,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_media_play"
+            android:src="@drawable/ic_play"
             android:contentDescription="Use Wheel" />
 
         <ImageButton
@@ -36,7 +36,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_menu_edit"
+            android:src="@drawable/ic_edit"
             android:contentDescription="Edit Wheel" />
 
         <ImageButton
@@ -44,7 +44,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_menu_delete"
+            android:src="@drawable/ic_delete"
             android:contentDescription="Delete Wheel" />
 
     </LinearLayout>

@@ -1,71 +1,52 @@
 package com.example.decisionwheel.wheel;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
 public class Wheel {
-    private static final int MAX_SLICES = 5;
-    private ArrayList<Slice> slices;
+    public static final int MAX_SLICES = 5;
+
     private String category;
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    private static Boolean status = false;
+    private int userId;
+    private ArrayList<Slice> slices;
 
     public Wheel() {
-        slices = new ArrayList<>();
-        category = "UNASSIGNED";
+        this.slices = new ArrayList<>();
+        this.category = "UNASSIGNED";
     }
+
     public Wheel(String category) {
-        slices = new ArrayList<>();
+        this.slices = new ArrayList<>();
         this.category = category;
     }
+
+    public Wheel(String category, int userId) {
+        this.slices = new ArrayList<>();
+        this.category = category;
+        this.userId = userId;
+    }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+
+    public int getUserId() { return userId; }
+    public void setUserId(int userId) { this.userId = userId; }
+
+    public ArrayList<Slice> getSlices() { return slices; }
+    public void setSlices(ArrayList<Slice> slices) { this.slices = slices; }
+
     public void insertSlice(Slice slice) {
         if (slices.size() < MAX_SLICES) {
             slices.add(slice);
-            Log.i("Wheel", "Slice inserted");
         } else {
             throw new IllegalStateException("Wheel is full");
         }
     }
 
-    public void replaceSlice(Slice slice, int index){
-        if (index >= 0 && index < slices.size()) {
-            slices.set(index, slice);
-        } else {
-            throw new IndexOutOfBoundsException("Invalid index");
-        }
-    }
-
-    public void removeSlice(int index){
+    public void removeSlice(int index) {
         if (index >= 0 && index < slices.size()) {
             slices.remove(index);
         } else {
-            throw new IndexOutOfBoundsException("Invalid index");
+            throw new IndexOutOfBoundsException("Invalid slice index: " + index);
         }
     }
-
-    public ArrayList<Slice> getSlices() {
-        return slices;
-    }
-
-    public void removeSliceBySlice(Slice slice){
-        try{
-            slices.remove(slice);
-        } catch (Exception e){
-            System.out.println("Slice not found");
-        }
-    }
-
-    public void setStatus(Boolean status) {
-        Wheel.status = status;
-    }
-
 }

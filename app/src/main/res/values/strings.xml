@@ -13,4 +13,14 @@
     <string name="enter_password">Enter password</string>
     <string name="create_account1">Create Account</string>
     <string name="enter_usernameText">Enter username</string>
+    <string name="add_wheel">Add Wheel</string>
+
+    <string-array name="wheel_colors">
+        <item>Red</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Yellow</item>
+        <item>Magenta</item>
+        <item>Cyan</item>
+    </string-array>
 </resources>

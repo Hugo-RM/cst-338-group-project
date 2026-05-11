@@ -1,34 +1,31 @@
-package com.example.decisionwheel;
+package com.example.decisionwheel.database;
 
 import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.decisionwheel.database.AppDatabase;
+import com.example.decisionwheel.database.UserDao;
+import com.example.decisionwheel.database.UserEntity;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class UserRepository {
-    private final UserDAO userDao;
+    private final UserDao userDao;
     private static UserRepository repository;
 
     private UserRepository(Application application) {
-        AppDatabase db = AppDatabase.getDatabase(application);
-        this.userDao = db.userDAO();
+        AppDatabase db = AppDatabase.getInstance(application);
+        this.userDao = db.userDao();
     }
 
     public static UserRepository getRepository(Application application) {
-        if (repository != null) {
-            return repository;
-        }
+        if (repository != null) return repository;
         Future<UserRepository> future = AppDatabase.databaseWriteExecutor.submit(
-                new Callable<UserRepository>() {
-                    @Override
-                    public UserRepository call() throws Exception {
-                        return new UserRepository(application);
-                    }
-                }
+                (Callable<UserRepository>) () -> new UserRepository(application)
         );
         try {
             return future.get();
@@ -38,31 +35,25 @@ public class UserRepository {
         return null;
     }
 
-    public LiveData<User> getUserByUserName(String username) {
-        return userDao.getUserByUserName(username);
+    public LiveData<UserEntity> getUserByUserName(String username) {
+        return userDao.findByUsernameLD(username);
     }
 
-    public void insertUser(User user) {
+    public void insertUser(UserEntity user) {
         AppDatabase.databaseWriteExecutor.execute(() -> userDao.insert(user));
     }
 
-
-
-    public LiveData<User> getUserById(int userId) {
-        return userDao.getUserById(userId);
-    }
-
-
-    public User getUserByUserNameNow(String username) {
+    public UserEntity getUserByUserNameNow(String username) {
         try {
             return AppDatabase.databaseWriteExecutor.submit(
-                    () -> userDao.getUserByUserNameNow(username)
+                    () -> userDao.findByUsername(username)
             ).get();
         } catch (Exception e) {
             return null;
         }
     }
 
-
-
+    public LiveData<UserEntity> getUserById(int userId) {
+        return userDao.findByIdLD(userId);
+    }
 }

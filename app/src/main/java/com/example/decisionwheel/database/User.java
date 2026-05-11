@@ -1,25 +1,26 @@
-package com.example.decisionwheel;
+package com.example.decisionwheel.database;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import java.util.*;
 
-
-@Entity(tableName = "user_table")
+@Entity(tableName = "user_table", indices = {@Index(value = {"username"}, unique = true)})
 public class User {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String username;
     private String password;
+    // password for authentication
     private boolean isAdmin;
-
+    // flag to indicate if the user is an admin
+    // constructor
     public User(String username, String password) {
         this.username = username;
         this.password = password;
         this.isAdmin = false;
     }
-
+    // getters and setters
     public int getId() {
         return id;
     }

@@ -22,6 +22,7 @@
         </activity>
 
         <activity android:name=".LoginActivity" android:exported="false" />
+        <activity android:name=".CreationActivity" android:exported="false" />
         <activity android:name=".LandingActivity" android:exported="false" />
         <activity android:name=".AdminLandingActivity" android:exported="false" />
         <activity android:name=".WheelDetailActivity" android:exported="false" />
